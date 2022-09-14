@@ -5,7 +5,7 @@
 #include<algorithm>
 #include "generador.h"
 #include "first_block.h"
-
+ 
 using namespace std;
 
 int main(){

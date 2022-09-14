@@ -18,7 +18,7 @@ int main(){
 
     int *y = new int[_size];
     int *x = new int[_size];
-
+  
     int razon = _size/10;
     double time;
 

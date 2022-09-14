@@ -7,7 +7,7 @@
 using namespace std;
 
 void llenar_matrix(int **A , int n_filas, int n_columnas){
-    int max = n_filas;
+    int max = n_filas; 
     srand(time(0));
     for (int i=0; i<n_filas; i++){
         for(int j=0; j<n_columnas; j++){
