@@ -10,7 +10,7 @@ using namespace std;
 
 int main(){
 
-    int _size = 10000;
+    int _size = 5000;
     int **A = new int*[_size];
     for (int i = 0; i < _size; i++) {
         A[i] = new int[_size];
@@ -26,13 +26,11 @@ int main(){
         C[i] = new int[_size];
     }
   
-    int razon = _size/10;
-    const int block = 2;
+    const int razon = _size/5;
+    const int block = 10;
     double time;
 
-    ofstream salida{"classic.txt", ios::out};
-
-    salida << "tamanho" << "\t" << "time\t" << endl;   
+    ofstream salida{"block.txt", ios::out};
 
     for(size_t lenght = razon; lenght <= _size; lenght+=razon){
 
@@ -46,8 +44,16 @@ int main(){
         time = double(chrono::duration_cast <chrono::microseconds> (end - begin).count());
 
         
-        salida << lenght << "\t" << time << " ms\t" << endl;       
+        salida << lenght << "\t" << time << " \t" << endl;       
     }
+    for(int i=0; i<_size; i++){
+        delete[] A[i];
+        delete[] B[i];
+        delete[] C[i];
+    }
+    delete[] A;
+    delete[] B;
+    delete[] C;
 
     return 0;
 }

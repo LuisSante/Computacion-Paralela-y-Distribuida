@@ -1,9 +1,7 @@
 # Ignore files with extension `.class` & `.exe`
 *.exe
 
-# Ignore folders .vscode
+# Ignore folders
 
 .vscode/*
-!.vscode/settings.json
-
 .ipynb_checkpoints/*

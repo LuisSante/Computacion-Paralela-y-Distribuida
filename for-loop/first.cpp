@@ -41,5 +41,12 @@ int main(){
         //cout << lenght << "\t" << time << " \t" << endl;   
     }
 
+    for(int i=0; i<_size; i++){
+        delete[] arr[i];
+    }
+    delete[] arr;
+    delete[] x;
+    delete[] y;
+
     return 0;
 }
