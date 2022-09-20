@@ -10,19 +10,13 @@ using namespace std;
 
 int main(){
 
-    int _size = 5000;
+    int _size = 2000;
     int **A = new int*[_size];
-    for (int i = 0; i < _size; i++) {
-        A[i] = new int[_size];
-    }
-
     int **B = new int*[_size];
-    for (int i = 0; i < _size; i++) {
-        B[i] = new int[_size];
-    }
-
     int **C = new int*[_size];
     for (int i = 0; i < _size; i++) {
+        A[i] = new int[_size];
+        B[i] = new int[_size];
         C[i] = new int[_size];
     }
   
