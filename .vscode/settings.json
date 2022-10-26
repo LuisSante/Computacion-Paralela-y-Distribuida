@@ -3,5 +3,6 @@
         "chrono": "cpp",
         "new": "cpp",
         "mpi.h": "c"
-    }
+    },
+    "C_Cpp.errorSquiggles": "Enabled"
 }
