@@ -29,7 +29,10 @@
 
 int thread_count;
 int barrier_thread_counts[BARRIER_COUNT];
-pthread_mutex_t barrier_mutex;
+
+// Las exclusiones mutuas se utilizan para proteger los datos u otros recursos del acceso simultáneo.
+//sera inicializado en pthread_mutex_init(&mutex, NULL); y elimniado con pthread_mutex_destroy(&barrier_mutex)
+pthread_mutex_t barrier_mutex; //El ID de mutex
 
 void Usage(char *prog_name);
 void *Thread_work(void *rank);
@@ -38,28 +41,36 @@ void *Thread_work(void *rank);
 int main(int argc, char *argv[])
 {
     long thread, i;
-    pthread_t *thread_handles;
+
+    //el tipo abstracto pthread_t se implementa como un ID de subproceso entero (4 bytes). 
+    pthread_t *thread_handles;  //thread 
     double start, finish;
 
     if (argc != 2)
         Usage(argv[0]);
+
+    //strtol convierte la parte inicial de la cadena en str en un valor int largo de acuerdo con la base dada
     thread_count = strtol(argv[1], NULL, 10);
 
     thread_handles = malloc(thread_count * sizeof(pthread_t));
+
+
     for (i = 0; i < BARRIER_COUNT; i++)
         barrier_thread_counts[i] = 0;
+    // inicializa la exclusión mutua a la que hace referencia mutex con atributos especificados por attr
     pthread_mutex_init(&barrier_mutex, NULL);
 
     GET_TIME(start);
+
     for (thread = 0; thread < thread_count; thread++)
-        pthread_create(&thread_handles[thread], NULL,
-                       Thread_work, (void *)thread);
+        pthread_create(&thread_handles[thread], NULL, Thread_work, (void *)thread);
 
     for (thread = 0; thread < thread_count; thread++)
     {
         pthread_join(thread_handles[thread], NULL);
     }
     GET_TIME(finish);
+
     printf("Elapsed time = %e seconds\n", finish - start);
 
     pthread_mutex_destroy(&barrier_mutex);
@@ -95,11 +106,13 @@ void *Thread_work(void *rank)
 
     for (i = 0; i < BARRIER_COUNT; i++)
     {
+        //l objeto mutex al que hace referencia mutex se bloqueará llamando a pthread_mutex_lock (). Si el mutex ya está bloqueado, el subproceso de llamada se 
+        //bloqueará hasta que el mutex esté disponible.
         pthread_mutex_lock(&barrier_mutex);
         barrier_thread_counts[i]++;
+        //La función pthread_mutex_unlock () desbloquea el mutex especificado. 
         pthread_mutex_unlock(&barrier_mutex);
-        while (barrier_thread_counts[i] < thread_count)
-            ;
+        while (barrier_thread_counts[i] < thread_count);
 #ifdef DEBUG
         if (my_rank == 0)
         {

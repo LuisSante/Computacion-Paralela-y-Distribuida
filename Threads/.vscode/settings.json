@@ -1,5 +1,7 @@
 {
     "files.associations": {
-        "fasdf": "c"
+        "fasdf": "c",
+        "type_traits": "c",
+        "stdio.h": "c"
     }
 }

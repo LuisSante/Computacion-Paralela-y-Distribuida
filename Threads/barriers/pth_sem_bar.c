@@ -25,6 +25,13 @@
  * IPP:   Section 4.8.2  (pp. 177  and ff.)
  */
 
+
+//Los semáforos son un tipo de sincronización primitiva que encapsula la idea de "umbralización".
+
+//Un semáforo tiene dos operaciones: s.up()y s.down(). Un semáforo también tiene un número interno no negativo que representa su estado. 
+//Se permite que una llamada de subproceso s.down() continúe solo si este número es positivo, en cuyo caso el número se reduce atómicamente y 
+//el subproceso continúa con su trabajo.
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <pthread.h>
@@ -108,15 +115,15 @@ void *Thread_work(void *rank)
         if (counter == thread_count - 1)
         {
             counter = 0;
-            sem_post(&count_sem);
+            sem_post(&count_sem);//incrementa un semaforo
             for (j = 0; j < thread_count - 1; j++)
-                sem_post(&barrier_sems[i]);
+                sem_post(&barrier_sems[i]);//incrementa un semaforo
         }
         else
         {
             counter++;
-            sem_post(&count_sem);
-            sem_wait(&barrier_sems[i]);
+            sem_post(&count_sem);//incrementa un semaforo
+            sem_wait(&barrier_sems[i]);//bloquea el conteo de semaforos
         }
 #ifdef DEBUG
         if (my_rank == 0)

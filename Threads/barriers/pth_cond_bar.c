@@ -22,6 +22,14 @@
  * IPP:   Section 4.8.3 (pp. 179 and ff.)
  */
 
+//Las variables de condición son primitivas de sincronización que permiten que los subprocesos esperen hasta que se produzca una condición determinada. 
+//Las variables de condición son objetos en modo de usuario que no se pueden compartir entre procesos
+// Las variables de condición usadas en conjunto con mutex permiten a un hilo esperar por la ocurrencia de una condición arbitraria
+
+//Las variables de condición permiten a los subprocesos liberar de forma atómica un bloqueo y entrar en el estado de suspensión. 
+//Se pueden usar con secciones críticas o bloqueos ligeros de lector/escritor (SRW). 
+//Las variables de condición admiten operaciones que "reactivan uno" o "reactivan todos
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <pthread.h>
@@ -32,6 +40,7 @@
 int thread_count;
 int barrier_thread_count = 0;
 pthread_mutex_t barrier_mutex;
+//condicion de variable
 pthread_cond_t ok_to_proceed;
 
 void Usage(char* prog_name);
@@ -49,12 +58,12 @@ int main(int argc, char* argv[]) {
 
    thread_handles = malloc (thread_count*sizeof(pthread_t));
    pthread_mutex_init(&barrier_mutex, NULL);
+   //inicializador de pthread_cond_t  
    pthread_cond_init(&ok_to_proceed, NULL);
 
    GET_TIME(start);
    for (thread = 0; thread < thread_count; thread++)
-      pthread_create(&thread_handles[thread], NULL,
-          Thread_work, (void*) thread);
+      pthread_create(&thread_handles[thread], NULL, Thread_work, (void*) thread);
 
    for (thread = 0; thread < thread_count; thread++) {
       pthread_join(thread_handles[thread], NULL);
@@ -97,6 +106,7 @@ void *Thread_work(void* rank) {
 
    for (i = 0; i < BARRIER_COUNT; i++) {
       pthread_mutex_lock(&barrier_mutex);
+      // un contador para saber si todos los hilos ya llegaron a la barrera
       barrier_thread_count++;
       if (barrier_thread_count == thread_count) {
          barrier_thread_count = 0;
@@ -105,14 +115,14 @@ void *Thread_work(void* rank) {
                my_rank, i);
          fflush(stdout);
 #        endif
+         //la función pthread_cond_broadcast () desbloqueará todos los subprocesos actualmente bloqueados en la variable de condición especificada cond .
          pthread_cond_broadcast(&ok_to_proceed);
       } else {
-         // Wait unlocks mutex and puts thread to sleep.
-         //    Put wait in while loop in case some other
-         // event awakens thread.
-         while (pthread_cond_wait(&ok_to_proceed,
-                   &barrier_mutex) != 0);
-         // Mutex is relocked at this point.
+         // Espera desbloquea mutex y pone el hilo a dormir.
+          // Poner espera en el ciclo while en caso de que algún otro
+          // evento despierte el hilo.
+         while (pthread_cond_wait(&ok_to_proceed, &barrier_mutex) != 0);
+         // Mutex se vuelve a bloquear en este punto.
 #        ifdef DEBUG
          printf("Thread %ld > Awakened in barrier %d\n", my_rank, i);
          fflush(stdout);
