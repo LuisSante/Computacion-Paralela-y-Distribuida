@@ -1,29 +1,22 @@
-﻿/*
- * EXAMPLE OF MAPPING THREADS TO MULTIDIMENSIONAL DATA: CHAPTER 3
- */
-
-#include "lodepng.h"
+﻿#include "lodepng.h"
 #define STB_IMAGE_IMPLEMENTATION
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image.h"
 #include "stb_image_write.h"
 #include <iostream>
-
+#define BLUR_SIZE 7
 #define R 0
 #define G 1
 #define B 2
 #define A 3
 
-
- // input image is encoded as unsigned characters [0,255]
-__global__
-void greyKernel(unsigned char* in, unsigned char* out, int width, int height, int num_channel, int channel) {
+__global__ void greyKernel(unsigned char* in, unsigned char* out, int width, int height, int num_channel, int channel) {
 
   int col = threadIdx.x + blockIdx.x * blockDim.x;
   int row = threadIdx.y + blockIdx.y * blockDim.y;
 
   if(col < width && row < height) {
-    int greyOffset = row*width + col;
+    int greyOffset = row*width + col; //indice de pixel para el out
     int rgbOffset = greyOffset*num_channel;
     unsigned char r = in[rgbOffset ]; // red value for pixel
     unsigned char g = in[rgbOffset + 2]; // green value for pixel
@@ -36,7 +29,7 @@ void greyKernel(unsigned char* in, unsigned char* out, int width, int height, in
 int main() {
 
   int width, height,n;
-  unsigned char *image = stbi_load("image.png",&width,&height,&n,0);
+  unsigned char *image = stbi_load("lena_original.jpg",&width,&height,&n,0);
   unsigned char *output = (unsigned char*)malloc(width * height * n *sizeof(unsigned char));
   unsigned char* Dev_Input_Image = NULL;
   unsigned char* Dev_Output_Image = NULL;
@@ -57,7 +50,7 @@ int main() {
     cudaMemcpy(image, Dev_Output_Image, sizeof(unsigned char) * height * width * n, cudaMemcpyDeviceToHost);
   cudaFree(Dev_Input_Image);
   cudaFree(Dev_Output_Image);
-  stbi_write_png("output_stbimage.png", width, height, n, image, width * n);
+  stbi_write_png("lena_original_grey.jpg", width, height, n, image, width * n);
 
 
   return 0;

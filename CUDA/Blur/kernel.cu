@@ -10,7 +10,8 @@
 #define B 2
 #define A 3
 
-__global__ void blurKernel(unsigned char* in, unsigned char* out, int width, int height, int num_channel, int channel, int copy_A) {
+__global__ 
+void blurKernel(unsigned char* in, unsigned char* out, int width, int height, int num_channel, int channel, int copy_A) {
 
   int col = blockIdx.x * blockDim.x + threadIdx.x;
   int row = blockIdx.y * blockDim.y + threadIdx.y;
@@ -37,7 +38,7 @@ __global__ void blurKernel(unsigned char* in, unsigned char* out, int width, int
 int main() {
 
   int width, height,n;
-  unsigned char *image = stbi_load("image.png",&width,&height,&n,0);
+  unsigned char *image = stbi_load("lena_original.jpg",&width,&height,&n,0);
   unsigned char *output = (unsigned char*)malloc(width * height * n *sizeof(unsigned char));
   unsigned char* Dev_Input_Image = NULL;
   unsigned char* Dev_Output_Image = NULL;
@@ -58,7 +59,7 @@ int main() {
     cudaMemcpy(image, Dev_Output_Image, sizeof(unsigned char) * height * width * n, cudaMemcpyDeviceToHost);
   cudaFree(Dev_Input_Image);
   cudaFree(Dev_Output_Image);
-  stbi_write_png("output_stbimage.png", width, height, n, image, width * n);
+  stbi_write_png("lena_original_blur.jpg", width, height, n, image, width * n);
 
 
   return 0;
