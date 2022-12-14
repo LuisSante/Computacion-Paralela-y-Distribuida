@@ -106,8 +106,8 @@ void *Thread_work(void *rank)
 
     for (i = 0; i < BARRIER_COUNT; i++)
     {
-        //l objeto mutex al que hace referencia mutex se bloqueará llamando a pthread_mutex_lock (). Si el mutex ya está bloqueado, el subproceso de llamada se 
-        //bloqueará hasta que el mutex esté disponible.
+        //el objeto mutex al que hace referencia mutex se bloqueará llamando a pthread_mutex_lock (). Si el mutex ya está bloqueado, 
+        //el subproceso de llamada se bloqueará hasta que el mutex esté disponible.
         pthread_mutex_lock(&barrier_mutex);
         barrier_thread_counts[i]++;
         //La función pthread_mutex_unlock () desbloquea el mutex especificado. 

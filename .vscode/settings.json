@@ -2,7 +2,8 @@
     "files.associations": {
         "chrono": "cpp",
         "new": "cpp",
-        "mpi.h": "c"
+        "mpi.h": "c",
+        "iostream": "cpp"
     },
     "C_Cpp.errorSquiggles": "Enabled"
 }

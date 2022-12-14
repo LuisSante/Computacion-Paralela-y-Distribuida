@@ -14,7 +14,6 @@ int main(int argc, char *argv[])
     {
         int b = a + i; // b private
     }
-    return 0;
 
 // explicito
 #pragma omp parallel for shared(n, a)
